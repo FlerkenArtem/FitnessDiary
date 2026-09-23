@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">FitnessDiary</string>
+    <string name="new_exercise_form_title">Новое упражнение</string>
+    <string name="exercise_name">Название упражнения</string>
+    <string name="exercise_approaches">Количество подходов</string>
+    <string name="exercise_repetitions">Количество повторений</string>
+    <string name="exercise_weight">Масса (кг)</string>
+    <string name="exercise_time">Время выполнения</string>
+    <string name="exercise_type">Тип упражнения</string>
+    <string name="exercise_type_time">По времени</string>
+    <string name="exercise_type_repetitions">По количеству/массе</string>
+    <string name="btn_show">Показать</string>
+    <string name="btn_clear">Очистить</string>
+    <string name="err_name">Введите название</string>
+    <string name="err_time">Введите время</string>
+    <string name="err_approaches">Введите количество подходов</string>
+    <string name="err_repetitions">Введите количество повторений</string>
+    <string name="err_weight">Введите массу</string>
 </resources>
