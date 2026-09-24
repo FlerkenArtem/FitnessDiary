@@ -13,7 +13,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : AppCompatActivity() {
 
@@ -93,21 +96,14 @@ class MainActivity : AppCompatActivity() {
 
     // Привязка наблюдателей к их функциям
     private fun setupListeners() {
-        // Переключение RadioButton меняет набор видимых полей
         typeGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.typeTime -> applyVisibility()
                 R.id.typeReps -> applyVisibility()
             }
         }
-
-        // Чекбокс веса влияет только в режиме "по подходам"
         weightCheck.setOnCheckedChangeListener { _, _ -> applyVisibility() }
-
-        // Кнопка "Показать"
         showButton.setOnClickListener { onShowClick() }
-
-        // Кнопка "Очистить"
         clearButton.setOnClickListener { onClearClick() }
     }
 
@@ -115,47 +111,62 @@ class MainActivity : AppCompatActivity() {
     private fun applyVisibility() {
         val timeMode = typeTime.isChecked
 
-        // Поля времени — только в режиме "по времени"
         timeInput.visibility = if (timeMode) View.VISIBLE else View.GONE
-
-        // Поля подходов/повторений — только в режиме "по подходам"
         approachesInput.visibility = if (timeMode) View.GONE else View.VISIBLE
         repetitionsInput.visibility = if (timeMode) View.GONE else View.VISIBLE
-
-        // Чекбокс веса — только в режиме "по подходам"
         weightCheck.visibility = if (timeMode) View.GONE else View.VISIBLE
-
-        // Поле веса — только если чекбокс отмечен
         weightInput.visibility =
             if (!timeMode && weightCheck.isChecked) View.VISIBLE else View.GONE
     }
 
+    /**
+     * Разбирает строку времени в Duration.
+     * Поддерживаются форматы: "ЧЧ:ММ:СС", "ММ:СС", "СС".
+     * Возвращает null, если формат неверный.
+     */
+    private fun parseDuration(input: String): Duration? {
+        val parts = input.trim().split(":")
+        return when (parts.size) {
+            // "ММ:СС"
+            2 -> {
+                val m = parts[0].toLongOrNull() ?: return null
+                val s = parts[1].toLongOrNull() ?: return null
+                if (m < 0 || s < 0 || s >= 60) null else m.minutes + s.seconds
+            }
+            // "ЧЧ:ММ:СС"
+            3 -> {
+                val h = parts[0].toLongOrNull() ?: return null
+                val m = parts[1].toLongOrNull() ?: return null
+                val s = parts[2].toLongOrNull() ?: return null
+                if (h < 0 || m < 0 || m >= 60 || s < 0 || s >= 60) null
+                else h.hours + m.minutes + s.seconds
+            }
+            else -> null
+        }
+    }
+
+    // Обработчик кнопки "Показать"
     private fun onShowClick() {
-        // Сброс прошлых ошибок
         nameInput.error = null
         timeInput.error = null
         approachesInput.error = null
         repetitionsInput.error = null
         weightInput.error = null
 
-        // 1. Название
         val name = nameInput.text.toString().trim()
         if (name.isEmpty()) {
             nameInput.error = getString(R.string.err_name)
             return
         }
 
-        // 2. Ветка по выбранному RadioButton
         val exercise: Exercise = if (typeTime.isChecked) {
-            // Конструктор (id, name, time)
-            val minutes = timeInput.text.toString().trim().toIntOrNull()
-            if (minutes == null || minutes <= 0) {
+            val duration = parseDuration(timeInput.text.toString())
+            if (duration == null || duration <= Duration.ZERO) {
                 timeInput.error = getString(R.string.err_time)
                 return
             }
-            Exercise(1, name, minutes.minutes)
+            Exercise(1, name, duration)
         } else {
-            // Общие поля для ветки с подходами
             val approaches = approachesInput.text.toString().trim().toIntOrNull()
             if (approaches == null || approaches <= 0) {
                 approachesInput.error = getString(R.string.err_approaches)
@@ -168,7 +179,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (weightCheck.isChecked) {
-                // Конструктор (id, name, approaches, repetitions, weight)
                 val weight = weightInput.text.toString().trim().toDoubleOrNull()
                 if (weight == null || weight < 0.0) {
                     weightInput.error = getString(R.string.err_weight)
@@ -176,15 +186,14 @@ class MainActivity : AppCompatActivity() {
                 }
                 Exercise(1, name, approaches, repetitions, weight)
             } else {
-                // Конструктор (id, name, approaches, repetitions)
                 Exercise(1, name, approaches, repetitions)
             }
         }
 
-        // 3. Вывод результата
         resultText.text = exercise.toString(false)
     }
 
+    // Обработчик кнопки "Очистить"
     private fun onClearClick() {
         nameInput.error = null
         timeInput.error = null

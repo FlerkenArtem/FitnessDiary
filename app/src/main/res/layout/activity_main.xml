@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/exercise_time"
-            android:inputType="number"
+            android:inputType="text"
             android:autofillHints="" />
 
         <!-- Поля варианта "по количеству/массе" -->

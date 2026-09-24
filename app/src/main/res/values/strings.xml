@@ -12,7 +12,7 @@
     <string name="btn_show">Показать</string>
     <string name="btn_clear">Очистить</string>
     <string name="err_name">Введите название</string>
-    <string name="err_time">Введите время</string>
+    <string name="err_time">Введите время (ЧЧ:ММ:СС)</string>
     <string name="err_approaches">Введите количество подходов</string>
     <string name="err_repetitions">Введите количество повторений</string>
     <string name="err_weight">Введите массу</string>
