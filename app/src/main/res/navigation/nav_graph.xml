@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listFragment">
+
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.example.fitnessdiary.ListFragment"
+        android:label="@string/title_list"
+        tools:layout="@layout/fragment_list">
+
+        <action
+            android:id="@+id/action_list_to_form"
+            app:destination="@id/formFragment" />
+
+        <action
+            android:id="@+id/action_list_to_details"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/formFragment"
+        android:name="com.example.fitnessdiary.FormFragment"
+        android:label="@string/title_form"
+        tools:layout="@layout/fragment_form">
+
+        <action
+            android:id="@+id/action_form_to_list"
+            app:destination="@id/listFragment"
+            app:popUpTo="@id/listFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.fitnessdiary.DetailsFragment"
+        android:label="@string/title_details"
+        tools:layout="@layout/fragment_details">
+
+        <argument
+            android:name="recordId"
+            app:argType="long" />
+    </fragment>
+
+</navigation>

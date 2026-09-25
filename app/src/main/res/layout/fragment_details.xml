@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/details_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".DetailsFragment">
+
+    <TextView
+        android:id="@+id/exercise_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/exercise_time"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/exercise_approaches"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text=""
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/exercise_repetitions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text=""
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/exercise_weight"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text=""
+        android:visibility="gone"/>
+
+</LinearLayout>

@@ -9,11 +9,24 @@
     <string name="exercise_type">Тип упражнения</string>
     <string name="exercise_type_time">По времени</string>
     <string name="exercise_type_repetitions">По количеству/массе</string>
-    <string name="btn_show">Показать</string>
+    <string name="btn_add">Добавить</string>
     <string name="btn_clear">Очистить</string>
     <string name="err_name">Введите название</string>
     <string name="err_time">Введите время (ЧЧ:ММ:СС)</string>
     <string name="err_approaches">Введите количество подходов</string>
     <string name="err_repetitions">Введите количество повторений</string>
     <string name="err_weight">Введите массу</string>
+    <string name="btn_show_first">Показать первую запись</string>
+    <string name="btn_show_second">Показать вторую запись</string>
+    <string name="title_list">Список упражнений</string>
+    <string name="title_form">Добавить новое упражнение</string>
+    <string name="title_details">Детали упраженения</string>
+    <string name="no_records">Не найдено ни одного упражнения</string>
+    <string name="record_not_found">Запись не найдена</string>
+    <string name="record_added">Упражнение добавлено</string>
+    <string name="about_title">О программе</string>
+    <string name="about_app_name">FitnessDiary</string>
+    <string name="about_theme_label">Тема</string>
+    <string name="about_theme">Спортивный дневник</string>
+    <string name="btn_about">О программе</string>
 </resources>

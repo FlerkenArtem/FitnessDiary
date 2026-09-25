@@ -1,9 +1,10 @@
 package com.example.fitnessdiary
 
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.time.Duration
 
 class Exercise private constructor(
-    val id: Int,
+    val id: Long,
     var name: String,
     var approaches: Int?,
     var repetitions: Int?,
@@ -21,22 +22,18 @@ class Exercise private constructor(
             field = value
         }
 
-    constructor(id: Int, name: String, time: Duration) :
-            this(id, name, null, null, null, time)
+    constructor(name: String, time: Duration) :
+            this(nextId(), name, null, null, null, time)
 
-    constructor(id: Int, name: String, approaches: Int, repetitions: Int) :
-            this(id, name, approaches, repetitions, null, null)
+    constructor(name: String, approaches: Int, repetitions: Int) :
+            this(nextId(), name, approaches, repetitions, null, null)
 
-    constructor(id: Int, name: String, approaches: Int, repetitions: Int, weight: Double) :
-            this(id, name, approaches, repetitions, weight, null)
+    constructor(name: String, approaches: Int, repetitions: Int, weight: Double) :
+            this(nextId(), name, approaches, repetitions, weight, null)
 
     // Функция вывода данных о тренировке
-    fun toString(printId : Boolean = false) : String {
+    override fun toString() : String {
         var strRes : String = ""
-
-        if (printId) {
-            strRes += "ID: $id; "
-        }
         strRes += "Название: $name; "
 
         when {
@@ -60,5 +57,10 @@ class Exercise private constructor(
             }
         }
         return strRes
+    }
+
+    companion object {
+        private val idGenerator = AtomicLong(0L)
+        private fun nextId(): Long = idGenerator.incrementAndGet()
     }
 }
