@@ -16,8 +16,6 @@
     <string name="err_approaches">Введите количество подходов</string>
     <string name="err_repetitions">Введите количество повторений</string>
     <string name="err_weight">Введите массу</string>
-    <string name="btn_show_first">Показать первую запись</string>
-    <string name="btn_show_second">Показать вторую запись</string>
     <string name="title_list">Список упражнений</string>
     <string name="title_form">Добавить новое упражнение</string>
     <string name="title_details">Детали упраженения</string>
@@ -29,4 +27,10 @@
     <string name="about_theme_label">Тема</string>
     <string name="about_theme">Спортивный дневник</string>
     <string name="btn_about">О программе</string>
+    <string name="btn_update">Обновить</string>
+    <string name="empty_list">Список пуст</string>
+    <string name="item_approaches">Подходы: %1$d</string>
+    <string name="item_repetitions">Повторения: %1$d</string>
+    <string name="item_weight">Вес: %1$s кг</string>
+    <string name="item_time">Время: %1$s</string>
 </resources>

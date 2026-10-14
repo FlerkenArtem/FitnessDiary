@@ -3,37 +3,30 @@ package com.example.fitnessdiary
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.time.Duration
 
-class Exercise private constructor(
+data class Exercise(
     val id: Long,
     var name: String,
-    var approaches: Int?,
-    var repetitions: Int?,
-    weight: Double?,
-    var time: Duration?
+    var approaches: Int? = null,
+    var repetitions: Int? = null,
+    var weight: Double? = null,
+    var time: Duration? = null
 ) {
-    // Масса нагрузки в кг
-    var weight: Double? = weight
-        set(value) {
-            if (value != null) {
-                require(value >= 0.0) {
-                    "Масса нагрузки не может быть отрицательной."
-                }
-            }
-            field = value
+    init {
+        require(weight == null || weight!! >= 0.0) {
+            "Масса нагрузки не может быть отрицательной."
         }
+    }
 
-    constructor(name: String, time: Duration) :
-            this(nextId(), name, null, null, null, time)
-
+    constructor(name: String, time: Duration) : this(nextId(), name, time = time)
     constructor(name: String, approaches: Int, repetitions: Int) :
-            this(nextId(), name, approaches, repetitions, null, null)
-
+            this(nextId(), name, approaches, repetitions)
     constructor(name: String, approaches: Int, repetitions: Int, weight: Double) :
-            this(nextId(), name, approaches, repetitions, weight, null)
+            this(nextId(), name, approaches, repetitions, weight)
+
 
     // Функция вывода данных о тренировке
     override fun toString() : String {
-        var strRes : String = ""
+        var strRes = ""
         strRes += "Название: $name; "
 
         when {
