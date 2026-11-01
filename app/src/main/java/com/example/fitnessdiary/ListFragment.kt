@@ -6,27 +6,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import com.example.fitnessdiary.data.ExerciseDao
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 class ListFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: RecordAdapter
-    private lateinit var updateButton : Button
-    private lateinit var progressBar : ProgressBar
-    private lateinit var emptyText : TextView
-    private var refreshJob : Job? = null
+    private var recyclerView: RecyclerView? = null
+    private var adapter: RecordAdapter? = null
+    private lateinit var emptyText: TextView
+
+    private val dao: ExerciseDao
+        get() = (requireActivity().application as FitnessDiaryApplication).exerciseDao
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,59 +35,47 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val rv = view.findViewById<RecyclerView>(R.id.recyclerView)
         val addButton = view.findViewById<Button>(R.id.listAddButton)
         val aboutButton = view.findViewById<Button>(R.id.aboutButton)
-        updateButton = view.findViewById(R.id.updateButton)
-        recyclerView = view.findViewById(R.id.recyclerView)
-        progressBar = view.findViewById(R.id.progressBar)
         emptyText = view.findViewById(R.id.emptyText)
 
-
-        adapter = RecordAdapter { exercise ->
+        val a = RecordAdapter { exercise ->
             val args = bundleOf("recordId" to exercise.id)
             findNavController().navigate(R.id.action_list_to_details, args)
         }
-
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
-
-        adapter.submitList(RecordStore.records)
+        rv.layoutManager = LinearLayoutManager(requireContext())
+        rv.adapter = a
+        recyclerView = rv
+        adapter = a
 
         addButton.setOnClickListener {
             findNavController().navigate(R.id.action_list_to_form)
         }
-
         aboutButton.setOnClickListener {
-            val intent = Intent(requireContext(),
-                AboutActivity::class.java).apply {
-                putExtra(AboutActivity.EXTRA_THEME,
-                    getString(R.string.about_theme))
+            val intent = Intent(requireContext(), AboutActivity::class.java).apply {
+                putExtra(AboutActivity.EXTRA_THEME, getString(R.string.about_theme))
             }
             startActivity(intent)
         }
 
-        updateButton.setOnClickListener {
-            refresh()
-        }
-        refresh()
-    }
-
-    private fun refresh() {
-        if (refreshJob?.isActive == true) return
-
-        refreshJob = viewLifecycleOwner.lifecycleScope.launch {
-            progressBar.visibility = View.VISIBLE
-            updateButton.isEnabled = false
-
-            try {
-                delay(1200.milliseconds)
-                val current = RecordStore.records.toList()
-                adapter.submitList(current)
-                emptyText.visibility = if (current.isEmpty()) View.VISIBLE else View.GONE
-            } finally {
-                progressBar.visibility = View.GONE
-                updateButton.isEnabled = true
+        // Наблюдение за Flow из DAO
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                dao.getAll().collect { entities ->
+                    val records = entities.map { it.toExercise() }
+                    adapter?.submitList(records)
+                    emptyText.visibility =
+                        if (records.isEmpty()) View.VISIBLE else View.GONE
+                }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        recyclerView?.adapter = null
+        recyclerView = null
+        adapter = null
     }
 }

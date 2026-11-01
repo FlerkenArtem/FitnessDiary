@@ -11,13 +11,21 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.fitnessdiary.data.ExerciseDao
+import com.example.fitnessdiary.data.ExerciseEntity
+import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class FormFragment : Fragment() {
+
+    // DAO из FitnessDiaryApplication
+    private val dao: ExerciseDao
+        get() = (requireActivity().application as FitnessDiaryApplication).exerciseDao
 
     // Поля ввода
     private lateinit var nameInput: EditText
@@ -112,6 +120,7 @@ class FormFragment : Fragment() {
 
     // Обработчик кнопки "Добавить"
     private fun onAddClick() {
+        // Сброс прошлых ошибок
         nameInput.error = null
         timeInput.error = null
         approachesInput.error = null
@@ -124,13 +133,16 @@ class FormFragment : Fragment() {
             return
         }
 
-        val exercise: Exercise = if (typeTime.isChecked) {
+        val entity: ExerciseEntity = if (typeTime.isChecked) {
             val duration = parseDuration(timeInput.text.toString())
             if (duration == null || duration <= Duration.ZERO) {
                 timeInput.error = getString(R.string.err_time)
                 return
             }
-            Exercise(name, duration)
+            ExerciseEntity(
+                name = name,
+                timeSeconds = duration.inWholeSeconds // Перевод в секунды типа Long
+            )
         } else {
             val approaches = approachesInput.text.toString().trim().toIntOrNull()
             if (approaches == null || approaches <= 0) {
@@ -149,15 +161,40 @@ class FormFragment : Fragment() {
                     weightInput.error = getString(R.string.err_weight)
                     return
                 }
-                Exercise(name, approaches, repetitions, weight)
+                ExerciseEntity(
+                    name = name,
+                    approaches = approaches,
+                    repetitions = repetitions,
+                    weight = weight
+                )
             } else {
-                Exercise(name, approaches, repetitions)
+                ExerciseEntity(
+                    name = name,
+                    approaches = approaches,
+                    repetitions = repetitions
+                )
             }
         }
 
-        RecordStore.add(exercise)
-        Toast.makeText(requireContext(), R.string.record_added, Toast.LENGTH_SHORT).show()
-        findNavController().popBackStack()
+        viewLifecycleOwner.lifecycleScope.launch {
+            addButton.isEnabled = false
+            try {
+                dao.insert(entity)
+                Toast.makeText(
+                    requireContext(),
+                    R.string.record_added,
+                    Toast.LENGTH_SHORT
+                ).show()
+                findNavController().popBackStack()
+            } catch (e: Exception) {
+                Toast.makeText(
+                    requireContext(),
+                    "Ошибка сохранения: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                addButton.isEnabled = true
+            }
+        }
     }
 
     // Обработчик кнопки "Очистить"

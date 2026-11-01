@@ -1,44 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/details_fragment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".DetailsFragment">
 
-    <TextView
-        android:id="@+id/exercise_name"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text=""/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/exercise_time"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text=""/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_details"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
 
-    <TextView
-        android:id="@+id/exercise_approaches"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text=""
-        android:visibility="gone"/>
+        <EditText
+            android:id="@+id/exercise_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/exercise_name"
+            android:inputType="text"
+            android:autofillHints="" />
 
-    <TextView
-        android:id="@+id/exercise_repetitions"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text=""
-        android:visibility="gone"/>
+        <EditText
+            android:id="@+id/exercise_approaches"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/exercise_approaches"
+            android:inputType="number"
+            android:autofillHints=""
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/exercise_weight"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text=""
-        android:visibility="gone"/>
+        <EditText
+            android:id="@+id/exercise_repetitions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/exercise_repetitions"
+            android:inputType="number"
+            android:autofillHints=""
+            android:visibility="gone" />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/exercise_weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/exercise_weight"
+            android:inputType="numberDecimal"
+            android:autofillHints=""
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/exercise_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/exercise_time"
+            android:inputType="text"
+            android:autofillHints=""
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/btn_save_changes" />
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/btn_delete" />
+
+    </LinearLayout>
+</ScrollView>

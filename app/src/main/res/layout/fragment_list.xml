@@ -8,14 +8,6 @@
     android:padding="16dp"
     tools:context=".ListFragment">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:visibility="gone" />
-
     <TextView
         android:id="@+id/emptyText"
         android:layout_width="match_parent"
@@ -34,10 +26,10 @@
         android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:paddingBottom="8dp"
-        tools:listitem="@layout/item_record"/>
+        tools:listitem="@layout/item_record" />
 
     <LinearLayout
-    android:id="@+id/btn_bar"
+        android:id="@+id/btn_bar"
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,19 +42,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/btn_add" />
-
-        <Button
-            android:id="@+id/updateButton"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_update" />
-
-</LinearLayout>
-    <Button
-    android:id="@+id/aboutButton"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/btn_about" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/aboutButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_about" />
+</LinearLayout>

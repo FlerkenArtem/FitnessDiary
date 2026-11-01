@@ -16,6 +16,8 @@
     <string name="err_approaches">Введите количество подходов</string>
     <string name="err_repetitions">Введите количество повторений</string>
     <string name="err_weight">Введите массу</string>
+    <string name="btn_show_first">Показать первую запись</string>
+    <string name="btn_show_second">Показать вторую запись</string>
     <string name="title_list">Список упражнений</string>
     <string name="title_form">Добавить новое упражнение</string>
     <string name="title_details">Детали упраженения</string>
@@ -27,8 +29,17 @@
     <string name="about_theme_label">Тема</string>
     <string name="about_theme">Спортивный дневник</string>
     <string name="btn_about">О программе</string>
-    <string name="btn_update">Обновить</string>
     <string name="empty_list">Список пуст</string>
+    <string name="saved_changes">Изменения сохранены</string>
+    <string name="save_error">Ошибка сохранения: %1$s</string>
+    <string name="btn_save_changes">Сохранить изменения</string>
+    <string name="btn_delete">Удалить</string>
+    <string name="confirm_delete_title">Удалить запись?</string>
+    <string name="confirm_delete_message">Это действие нельзя отменить.</string>
+    <string name="confirm_yes">Удалить</string>
+    <string name="confirm_no">Отмена</string>
+    <string name="deleted">Запись удалена</string>
+    <string name="delete_error">Ошибка удаления: %1$s</string>
     <string name="item_approaches">Подходы: %1$d</string>
     <string name="item_repetitions">Повторения: %1$d</string>
     <string name="item_weight">Вес: %1$s кг</string>
