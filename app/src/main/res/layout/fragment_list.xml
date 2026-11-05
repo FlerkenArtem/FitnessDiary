@@ -18,6 +18,20 @@
         android:textSize="16sp"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/countText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:textSize="14sp"
+        tools:text="@string/record_count" />
+
+    <Spinner
+        android:id="@+id/filterSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

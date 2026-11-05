@@ -64,6 +64,18 @@
             android:inputType="text"
             android:autofillHints=""
             android:visibility="gone" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/exercise_workout_section"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/workoutSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/saveButton"

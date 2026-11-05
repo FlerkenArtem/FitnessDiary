@@ -44,4 +44,19 @@
     <string name="item_repetitions">Повторения: %1$d</string>
     <string name="item_weight">Вес: %1$s кг</string>
     <string name="item_time">Время: %1$s</string>
+    <string name="exercise_workout_section">Тренировка</string>
+    <string name="workout_name_hint">Название новой тренировки</string>
+    <string name="btn_create_workout">Создать</string>
+    <string name="workout_no_link">Без связи</string>
+    <string name="workout_created">Тренировка создана</string>
+    <string name="workout_name_empty">Введите название тренировки</string>
+    <string name="btn_pick_date">Дата</string>
+    <string name="workout_date_default">Сегодня</string>
+    <string name="workout_date_label">Дата тренировки: %1$s</string>
+    <string name="date_picker_title">Выберите дату тренировки</string>
+    <string name="workout_filter_all">Все</string>
+    <string name="record_count">Записей: %1$d</string>
+    <string name="btn_create_workout_with_exercise">Создать тренировку с упражнением</string>
+    <string name="workout_with_exercise_created">Тренировка и упражнение созданы</string>
+    <string name="transaction_error">Ошибка транзакции: %1$s</string>
 </resources>

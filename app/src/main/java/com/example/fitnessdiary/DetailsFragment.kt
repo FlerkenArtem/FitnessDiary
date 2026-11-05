@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -13,6 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessdiary.data.ExerciseDao
 import com.example.fitnessdiary.data.ExerciseEntity
+import com.example.fitnessdiary.data.WorkoutDao
+import com.example.fitnessdiary.data.WorkoutEntity
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
@@ -26,12 +30,16 @@ class DetailsFragment : Fragment() {
     private var repetitionsInput: EditText? = null
     private var weightInput: EditText? = null
     private var timeInput: EditText? = null
+    private var workoutSpinner: Spinner? = null
     private var saveButton: Button? = null
     private var deleteButton: Button? = null
+
     private var currentEntity: ExerciseEntity? = null
 
-    private val dao: ExerciseDao
+    private val exerciseDao: ExerciseDao
         get() = (requireActivity().application as FitnessDiaryApplication).exerciseDao
+    private val workoutDao: WorkoutDao
+        get() = (requireActivity().application as FitnessDiaryApplication).workoutDao
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,14 +54,15 @@ class DetailsFragment : Fragment() {
         repetitionsInput = view.findViewById(R.id.exercise_repetitions)
         weightInput = view.findViewById(R.id.exercise_weight)
         timeInput = view.findViewById(R.id.exercise_time)
+        workoutSpinner = view.findViewById(R.id.workoutSpinner)
         saveButton = view.findViewById(R.id.saveButton)
         deleteButton = view.findViewById(R.id.deleteButton)
 
         val recordId: Long = arguments?.getLong("recordId", -1L) ?: -1L
 
-        // Загрузка из DAO
+        // Загрузка данных
         viewLifecycleOwner.lifecycleScope.launch {
-            val entity = dao.findById(recordId)
+            val entity = exerciseDao.findById(recordId)
             currentEntity = entity
 
             if (entity == null) {
@@ -65,10 +74,11 @@ class DetailsFragment : Fragment() {
                 repetitionsInput?.visibility = View.GONE
                 weightInput?.visibility = View.GONE
                 timeInput?.visibility = View.GONE
+                workoutSpinner?.visibility = View.GONE
                 return@launch
             }
 
-            // Заполняем поля
+            // Заполнение полей упражнения
             nameInput?.setText(entity.name)
 
             if (entity.approaches != null) {
@@ -90,10 +100,40 @@ class DetailsFragment : Fragment() {
                 timeInput?.setText(entity.timeSeconds.seconds.toString())
                 timeInput?.visibility = View.VISIBLE
             } else timeInput?.visibility = View.GONE
+
+            // Настройка Spinner и восстановление выбора
+            setupWorkoutSpinner(entity.workoutId)
         }
 
-        saveButton?.setOnClickListener   { onSaveClick() }
+        saveButton?.setOnClickListener { onSaveClick() }
         deleteButton?.setOnClickListener { onDeleteClick() }
+    }
+
+    // Заполняет Spinner тренировками и восстанавливает выбор по workoutId.
+    private fun setupWorkoutSpinner(currentWorkoutId: Long?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val workouts = workoutDao.getAllWorkoutsOnce()
+            val noLink = WorkoutEntity(id = -1L, name = getString(R.string.workout_no_link))
+            val items = listOf(noLink) + workouts
+
+            val adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                items
+            ).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            workoutSpinner?.adapter = adapter
+
+            // Сопоставляем реальный id с позицией в Spinner
+            val index = if (currentWorkoutId == null) {
+                0 // Без связи
+            } else {
+                val found = items.indexOfFirst { it.id == currentWorkoutId }
+                if (found >= 0) found else 0
+            }
+            workoutSpinner?.setSelection(index)
+        }
     }
 
     private fun onSaveClick() {
@@ -151,41 +191,49 @@ class DetailsFragment : Fragment() {
                 duration.inWholeSeconds
             } else current.timeSeconds
 
-        val updated = current.copy(
-            name = newName,
-            approaches = newApproaches,
-            repetitions = newRepetitions,
-            weight = newWeight,
-            timeSeconds = newTimeSeconds
-        )
+        // Получаем выбранный workoutId
+        val selectedWorkout = workoutSpinner?.selectedItem as? WorkoutEntity
+        val newWorkoutId = if (selectedWorkout?.id == -1L) null else selectedWorkout?.id
 
+        // Сохранение в корутине
         viewLifecycleOwner.lifecycleScope.launch {
             saveButton?.isEnabled = false
             try {
-                dao.update(updated)
+                // Проверка существования объекта
+                if (newWorkoutId != null) {
+                    val exists = workoutDao.findById(newWorkoutId) != null
+                    if (!exists) {
+                        Toast.makeText(requireContext(), "Выбранная тренировка не найдена", Toast.LENGTH_LONG).show()
+                        saveButton?.isEnabled = true
+                        return@launch
+                    }
+                }
+
+                val updated = current.copy(
+                    name = newName,
+                    approaches = newApproaches,
+                    repetitions = newRepetitions,
+                    weight = newWeight,
+                    timeSeconds = newTimeSeconds,
+                    workoutId = newWorkoutId
+                )
+
+                exerciseDao.update(updated)
                 Toast.makeText(requireContext(), R.string.saved_changes, Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             } catch (e: Exception) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.save_error, e.message ?: ""),
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(requireContext(), getString(R.string.save_error, e.message ?: ""), Toast.LENGTH_LONG).show()
                 saveButton?.isEnabled = true
             }
         }
     }
 
-    // Удаление записи.
     private fun onDeleteClick() {
         val current = currentEntity ?: return
-
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.confirm_delete_title)
             .setMessage(R.string.confirm_delete_message)
-            .setPositiveButton(R.string.confirm_yes) { _, _ ->
-                performDelete(current)
-            }
+            .setPositiveButton(R.string.confirm_yes) { _, _ -> performDelete(current) }
             .setNegativeButton(R.string.confirm_no, null)
             .show()
     }
@@ -195,15 +243,11 @@ class DetailsFragment : Fragment() {
             deleteButton?.isEnabled = false
             saveButton?.isEnabled = false
             try {
-                dao.delete(entity)
+                exerciseDao.delete(entity)
                 Toast.makeText(requireContext(), R.string.deleted, Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             } catch (e: Exception) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.delete_error, e.message ?: ""),
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(requireContext(), getString(R.string.delete_error, e.message ?: ""), Toast.LENGTH_LONG).show()
                 deleteButton?.isEnabled = true
                 saveButton?.isEnabled = true
             }
@@ -236,6 +280,7 @@ class DetailsFragment : Fragment() {
         repetitionsInput = null
         weightInput = null
         timeInput = null
+        workoutSpinner = null
         saveButton = null
         deleteButton = null
         currentEntity = null

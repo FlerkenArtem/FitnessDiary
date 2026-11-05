@@ -103,6 +103,72 @@
             android:autofillHints=""
             android:visibility="gone" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/exercise_workout_section"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/workoutNameInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/workout_name_hint"
+                android:inputType="text"
+                android:autofillHints="" />
+
+            <Button
+                android:id="@+id/createWorkoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/btn_create_workout" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/createWorkoutWithExerciseButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/btn_create_workout_with_exercise" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/workoutDateText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/workout_date_default" />
+
+            <Button
+                android:id="@+id/pickDateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/btn_pick_date" />
+
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/workoutSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
         <Button
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
@@ -116,4 +182,5 @@
             android:layout_marginTop="16dp"
             android:text="@string/btn_clear" />
     </LinearLayout>
+
 </ScrollView>
